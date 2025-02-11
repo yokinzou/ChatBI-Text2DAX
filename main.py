@@ -4,10 +4,10 @@ from Pages.Chat.Chat_PBI_Page import chatPBI
 from Pages.Semantic_Management.PBI_Semantic_Page import PBI_Semantic
 
 
-# # 添加 logo 图片到侧边栏
-# st.logo(
-#     "Logo/app_logo.png",
-# ) 
+# 添加 logo 图片到侧边栏
+st.logo(
+    "logo.png",
+) 
 
 pg = st.navigation(
     [

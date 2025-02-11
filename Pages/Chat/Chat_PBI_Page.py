@@ -1,14 +1,18 @@
+import os
 import streamlit as st
-from openai import OpenAI
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
 
-# with st.sidebar:
-#     openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password")
-#     "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
-#     "[View the source code](https://github.com/streamlit/llm-examples/blob/main/Chatbot.py)"
-#     "[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/llm-examples?quickstart=1)"
+load_dotenv()
+
+ai_key = os.getenv("deepseek_api_key")
 
 def chatPBI():
-    st.title("💬 Chatbot")
+    st.set_page_config( 
+        page_title="Chat PBI",
+        page_icon="logo.png",
+        layout="wide")
+   
 
     if "messages" not in st.session_state:
         st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
@@ -16,15 +20,22 @@ def chatPBI():
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
 
-# if prompt := st.chat_input():
-    # if not openai_api_key:
-    #     st.info("Please add your OpenAI API key to continue.")
-    #     st.stop()
-
-    # # client = OpenAI(api_key=openai_api_key)
-    # st.session_state.messages.append({"role": "user", "content": prompt})
-    # st.chat_message("user").write(prompt)
-    # response = client.chat.completions.create(model="gpt-3.5-turbo", messages=st.session_state.messages)
-    # msg = response.choices[0].message.content
-    # st.session_state.messages.append({"role": "assistant", "content": msg})
-    # st.chat_message("assistant").write(msg)
+    # 添加占位文本 "What is up?"
+    if prompt := st.chat_input("What is up?"):
+        client = ChatOpenAI(
+            api_key=ai_key,
+            base_url="https://api.deepseek.com/v1",
+            model_name="deepseek-chat"
+        )
+        
+        # 添加用户消息并显示
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        
+        # 使用 with 语句块处理助手回复
+        with st.chat_message("assistant"):
+            response = client.invoke(st.session_state.messages)
+            msg = response.content
+            st.write(msg)
+            st.session_state.messages.append({"role": "assistant", "content": msg})

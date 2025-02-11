@@ -2,7 +2,7 @@
 
 This is a web application that allows you to chat with PBI by using text2DAX.
 
-## Features
+## Features (To do list)
 
 - Chat with PBI by using text2DAX
 - Management semantic model information of PBI
